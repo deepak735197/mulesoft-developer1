@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="american_flight_json" format="json">
+      <types:shape format="weave" example="examples/american-flights-example-4.json"><![CDATA[%dw 2.0
+
+type american_flight_json = Array<{|  ID: Number {"typeId": "int"},   code: String,   price: Number {"typeId": "double"},   departureDate: String,   origin: String,   destination: String,   emptySeats: Number {"typeId": "int"},   plane: {|    "type": String,     totalSeats: Number {"typeId": "int"}  |}|}> {"example": "[{\\\"ID\\\":1,\\\"code\\\":\\\"ER38sd\\\",\\\"price\\\":400.00,\\\"departureDate\\\":\\\"2016\\/03\\/20\\\",\\\"origin\\\":\\\"MUA\\\",\\\"destination\\\":\\\"SFO\\\",\\\"emptySeats\\\":0,\\\"plane\\\":{\\\"type\\\":\\\"Boeing 737\\\",\\\"totalSeats\\\":150}},{\\\"ID\\\":2,\\\"code\\\":\\\"ER45if\\\",\\\"price\\\":345.99,\\\"departureDate\\\":\\\"2016\\/02\\/11\\\",\\\"origin\\\":\\\"MUA\\\",\\\"destination\\\":\\\"LAX\\\",\\\"emptySeats\\\":52,\\\"plane\\\":{\\\"type\\\":\\\"Boeing 777\\\",\\\"totalSeats\\\":300}}]"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="flights_json" format="json">
+      <types:shape format="weave" example="examples/flights-example.json"><![CDATA[%dw 2.0
+
+type flights_json = Array<{|  airline: String,   flightCode: String,   fromAirportCode: String,   toAirportCode: String,   departureDate: String,   emptySeats: Number {"typeId": "int"},   totalSeats: Number {"typeId": "int"},   price: Number {"typeId": "int"},   planeType: String|}> {"example": "[{\\\"airline\\\":\\\"United\\\",\\\"flightCode\\\":\\\"ER38sd\\\",\\\"fromAirportCode\\\":\\\"LAX\\\",\\\"toAirportCode\\\":\\\"SFO\\\",\\\"departureDate\\\":\\\"May 21, 2016\\\",\\\"emptySeats\\\":0,\\\"totalSeats\\\":200,\\\"price\\\":199,\\\"planeType\\\":\\\"Boeing 737\\\"},{\\\"airline\\\":\\\"Delta\\\",\\\"flightCode\\\":\\\"ER0945\\\",\\\"fromAirportCode\\\":\\\"PDX\\\",\\\"toAirportCode\\\":\\\"CLE\\\",\\\"departureDate\\\":\\\"June 1, 2016\\\",\\\"emptySeats\\\":24,\\\"totalSeats\\\":350,\\\"price\\\":450,\\\"planeType\\\":\\\"Boeing 747\\\"}]"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="flight_json" format="json">
+      <types:shape format="weave" example="examples/flight-example.json"><![CDATA[%dw 2.0
+
+type flight_json = {|
+  airline: String, 
+  flightCode: String, 
+  fromAirportCode: String, 
+  toAirportCode: String, 
+  departureDate: String, 
+  emptySeats: Number {"typeId": "int"}, 
+  totalSeats: Number {"typeId": "int"}, 
+  price: Number {"typeId": "int"}, 
+  planeType: String
+|} {"example": "{\\\"airline\\\":\\\"United\\\",\\\"flightCode\\\":\\\"ER38sd\\\",\\\"fromAirportCode\\\":\\\"LAX\\\",\\\"toAirportCode\\\":\\\"SFO\\\",\\\"departureDate\\\":\\\"May 21, 2016\\\",\\\"emptySeats\\\":0,\\\"totalSeats\\\":200,\\\"price\\\":199,\\\"planeType\\\":\\\"Boeing 737\\\"}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="flights_xml" format="xml">
+      <types:example format="xml" element="{http://soap.training.mulesoft.com/}listAllFlightsResponse" location="examples/flights-example.xml"/>
+    </types:type>
+    <types:type name="flight_pojo" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: string]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#2c91fb88-d9ce-459c-ad65-25b2b736c161">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="american_flight_json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#4446cc94-95bc-4d3d-a9ab-359b2ad00efd">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="american_flight_json"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

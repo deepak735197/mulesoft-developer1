@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="924465d8-3369-47b2-93b5-d0df80087549" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="39310614-f85f-485c-bb89-e11a648aa78e" >
+		<db:my-sql-connection host="mudb.learn.mulesoft.com" port="3306" user="mule" password="mule" database="training" />
+	</db:config>
+	<flow name="getflights" doc:id="2c91fb88-d9ce-459c-ad65-25b2b736c161" >
+		<db:select doc:name="Select" doc:id="ad617315-f0b6-41bc-8e71-477e06689120" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM american]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="4446cc94-95bc-4d3d-a9ab-359b2ad00efd" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getFlightsByID" doc:id="939989d8-3cfb-4998-8735-478ce49a69c7" >
+		<db:select doc:name="Select" doc:id="bb38001c-3511-4501-a016-ff89c80e47d6" config-ref="Database_Config" >
+			<db:sql ><![CDATA[SELECT * FROM american WHERE ID = :ID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'ID': attributes.uriParams.ID}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="54cdbcb1-0b0c-458a-a725-a22ddaf28875" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="postFlight" doc:id="9c4df27a-65fa-428e-b9e9-07e0ef07eeb3" >
+		<set-payload value='{"message": "Flight added (but not really)"}' doc:name="Set Payload" doc:id="b92c3a79-eb40-4157-a617-a1262234139e" />
+	</flow>
+</mule>
